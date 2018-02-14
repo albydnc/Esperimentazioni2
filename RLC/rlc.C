@@ -33,20 +33,19 @@ void BANDpass(){
   float sPhase[n];
   // ciclo for (loop) sulle misure
   for(int i=0; i<n;i++){
-    sVi[i] = 0.015*Vi[i]+0.005*2.0;
+    sVi[i] = 0.015*Vi[i]+0.005*0.5;
     sVo[i] = 0.015*Vo[i];
-    if(Vo[i] < 2) Vo[i]+=0.005*0.2;
-    if(Vo[i] >= 2 && Vo[i] < 4) Vo[i]+=0.005*0.5;
-    if(Vo[i] >= 4 && Vo[i] < 8) Vo[i]+=0.005;
-    if(Vo[i] >= 8) Vo[i]+=0.010;
+    if(Vo[i] < 0.3) Vo[i]+=0.005*0.05;
+    if(Vo[i] >= 0.3 && Vo[i] < 1.1) Vo[i]+=0.005*0.2;
+    if(Vo[i] >= 1.1 ) Vo[i]+=0.005*0.5;
     T[i]= 1/freq[i];
-    freq[i] < 1000 ? sf[i]= 0.01 : sf[i]=1;
+    sf[i]=0.01*freq[i];
     sT[i]=sf[i]*T[i]/freq[i];
     Av[i]=Vo[i]/Vi[i];
     sAv[i] = Av[i]*sqrt(pow(sVo[i]/Vo[i],2)+pow(sVi[i]/Vi[i],2));
-    skew[i]<0 ? skew[i]=T[i]+skew[i];
+    skew[i]<0 ? skew[i]=T[i]+skew[i]; // converto le fasi in positivo
     phase[i] = 360*freq[i]*abs(skew[i])*1e-6;
-    //skew[i]<-1 ? sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(1/skew[i],2)):sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(0.01/skew[i],2));
+    skew[i]>1 ? sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(1/skew[i],2)):sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(0.01/skew[i],2));
     printf("f(Hz): (%.2f±%.2f) \t Vi(V): (%.1f±%.1f) \t Vo(V): (%.2f±%.2f) \t Av(unitario): (%.f±%.4f) \n",freq[i],sf[i],Vi[i],sVi[i],Vo[i],sVo[i],AdB[i],sAdB[i]);
   }
     // --------------------- Grafico Av(freq)  ------------------------------ //
