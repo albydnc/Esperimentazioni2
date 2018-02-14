@@ -75,7 +75,7 @@ void BANDpass(){
   gav->Fit(lfit,"M+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
-  */  // --------------------- Grafico phase(freq)  ------------------------------ //
+   // --------------------- Grafico phase(freq)  ------------------------------ //
   TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
   cph->SetFillColor(0);
   cph->cd();
