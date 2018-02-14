@@ -1,0 +1,180 @@
+#include <iostream>           // ci serve per stampare a video il testo
+#include <TGraphErrors.h>     // ci serve per istanziare grafici
+#include <TAxis.h>            // ci serve per manipolare gli assi dei grafici
+#include <TCanvas.h>          // ci serve per disegnare i grafici
+#include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
+#include <iomanip>            // ci serve per manipolare l'output a video 
+using namespace std;
+
+void HIGHpass(){
+  int n = 20;
+  float R = 220;
+  float C = 1.5e-4;
+  float freq[]  = {400,800,1200,1600,2000,2400,2800,3200,3600,4000,4400,4800,5200,5600,6000,7000,8000,9000,10000,100000};
+  float Vi[]    = {15.6,15.5,15.5,15.3,15.1,15.0,14.8,14.6,14.5,14.3,14.2,14.1,14.0,14.0,13.8,13.7,13.6,13.5,13.5,13.1}; // V
+  float Vo[]    = {1.36,2.62,3.81,4.93,5.90,6.81,7.56,8.31,8.81,9.37,9.81,10.1,10.5,10.7,11.0,11.4,11.7,12.0,12.2,13.1};
+  float skew[n]; //TO DO
+	        
+  // ---------------------- Quantità derivate ----------------------- //
+
+  // Array che conterà incertezze su Vi e Vo
+  float sVi[n];
+  float sVo[n];
+  float T[n];
+  float eT[n];
+  // Array che conterrà i valori calcolati dell'attenuazione  e  incertezze
+  float Av[nmisure];
+  float sAv[nmisure];
+
+  // ciclo for (loop) sulle misure
+  for(int i=0; i<n;j++){
+    sVi[i] = 0.1;
+    Vo[i] < 10 ? sVo[i]=0.01 : sVo[i] = 0.1;
+    T[i]= 1/freq[i];
+    eT[i]=1e-8;
+    Av[i]=Vi[i]/Vo[i];
+    sAv[i]=sqrt((sVi[i]/Vo[i])^2+(sVo[i]*Vi[i]/Vo[i]^2)^2);
+    cout "Vi (V): ("<<Vi[i]<<"±"<<sVi[i]<<") "
+  }
+  // ----------------------------------------------------------------- //
+
+
+
+  
+  // --------------------- Grafico i(V) ------------------------------ //
+  // Creo il canvas (la tela) su cui disegnare il grafico. "ciV" è il il suo nome in memoria
+  // è bene che sia unico dentro al programma. "i(v)" è semplicemente il titolo del canvas
+  // le due coppie di numeri che seguono sono le coordinate dell'angolo superiore sinistro e le seconde
+  // la dimensione in pixel lungo x e lungo y
+  TCanvas *ciV = new TCanvas("ciV","i(v)",200,10,600,400);
+  // Mi assicuro che la tela sia bianca (0 corrisponde al bianco, per altri colori vedi https://root.cern.ch/doc/master/classTColor.html)
+  ciV->SetFillColor(0);
+  // Mi assicuro che disegni su questa tela e non su un altra. Ciò è particolarmente importante quando ho tanti canvas aperti.
+  ciV->cd();
+  // Istanzio il grafico. Il costruttore che noi usiamo prende come argomenti:
+  // il numero di misure da disegnare, l'array di misure x (=V), l'array di misure y (=i), e gli
+  // array delle  rispettive incertezze
+  TGraphErrors *giV = new TGraphErrors(nmisure,V,i,sV,si);
+  // Nelle due righe successive disegno i punti del grafico con lo stile che più mi piace.
+  // Vedi anche https://root.cern.ch/doc/master/classTAttMarker.html
+  giV->SetMarkerSize(0.6);
+  giV->SetMarkerStyle(21);
+  // Facile, titolo del grafico
+  giV->SetTitle("i(V)");
+  // Titoli degli assi
+  giV->GetXaxis()->SetTitle("V [V]");
+  giV->GetYaxis()->SetTitle("i [A]");
+  // Do istruzioni al grafico di disegnarsi sul canvas che ho selezionato preventivamente con cd()
+  // Esistono diverse opzioni di disegno, vedi anche https://root.cern.ch/doc/master/classTGraphPainter.html
+  // "AP" è molto semplice, gli stiamo chiedendo di disegnare gli assi (A) e i punti (P)
+  giV->Draw("AP");
+  
+  cout << "\n\n --- Fit I(V) pow([0],1/([1]+1))*pow(x,([1]-1)/([1]+1)) \n" <<endl;
+  TF1 *funz0 = new TF1("funz0","pow([0]*pow(x,([1]-1)),1/([1]+1))",0,12);
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funz0->SetLineColor(4); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  giV->Fit(funz0,"RM+");
+
+  cout << "Chi^2:" << funz0->GetChisquare() << ", number of DoF: " << funz0->GetNDF() << " (Probability: " << funz0->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  // ----------------------------------------------------------------- //
+
+
+
+  // --------------------- Grafico P(R) ------------------------------ //
+  TCanvas *cPR = new TCanvas("cPR","P(R)",200,10,600,400);
+  cPR->SetFillColor(0);
+  cPR->cd();
+  TGraphErrors *gPR = new TGraphErrors(nmisure,R,P,sR,sP);
+  gPR->SetMarkerSize(0.6);
+  gPR->SetMarkerStyle(21);
+  gPR->SetTitle("P(R)");
+  gPR->GetXaxis()->SetTitle("R [#Omega]");
+  gPR->GetYaxis()->SetTitle("P [mW]");
+  gPR->Draw("AP");
+  // ----------------------------------------------------------------- //
+
+
+  cout << "\n\n --- Ipotesi  [0]*pow(x,[1]) --- \n" <<endl;
+  TF1 *funz1 = new TF1("funz1","[0]*pow(x,[1])",0,130);
+  // Le tre seguenti linee servono per inizializzare i parametri della funzione.
+  funz1->SetParameter(1,4);
+  // Talvolta è necessario imporre che un determinato parametro sia in un intervallo di validità definito. Usare
+  // questa funzione solo se con SetParameter il fit non converge o se il parametro dopo il fit esce dall'intervallo
+  // con significato fisico (e.g., una temperatura assoluta < 0 K).
+  funz1->SetParLimits(0,0,1);
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funz1->SetLineColor(1); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  gPR->Fit(funz1,"RM+");
+
+  cout << "Chi^2:" << funz1->GetChisquare() << ", number of DoF: " << funz1->GetNDF() << " (Probability: " << funz1->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  // Provare a fare fit a P(R) con funzione quartica: funz2 = [0]*pow(x,4) [Modificare]
+  cout << "\n\n --- Ipotesi  [0]*pow(x,4) --- \n" <<endl;
+  TF1 *funz2 = new TF1("funz2","[0]*pow(x,4)",0,130);
+  // Le tre seguenti linee servono per inizializzare i parametri della funzione.
+  funz2->SetParameter(0,pow(10,-7));
+  // Talvolta è necessario imporre che un determinato parametro sia in un intervallo di validità definito. Usare
+  // questa funzione solo se con SetParameter il fit non converge o se il parametro dopo il fit esce dall'intervallo
+  // con significato fisico (e.g., una temperatura assoluta < 0 K).
+  funz2->SetParLimits(0,0,1);
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funz2->SetLineColor(2); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  gPR->Fit(funz2,"RM+");
+  cout << "Chi^2:" << funz2->GetChisquare() << ", number of DoF: " << funz2->GetNDF() << " (Probability: " << funz2->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+  // Provare a fare fit a P(R) con funzione quartica: funz3 = [0]*pow(x,4) [Modificare]
+  cout << "\n\n --- Ipotesi  [0]*pow(x-[1],4) --- \n" <<endl;
+  TF1 *funz3 = new TF1("funz3","[0]*pow(x-[1],4)",0,130);
+  // Le tre seguenti linee servono per inizializzare i parametri della funzione.
+  funz3->SetParameter(0,pow(10,-7));
+  // Talvolta è necessario imporre che un determinato parametro sia in un intervallo di validità definito. Usare
+  // questa funzione solo se con SetParameter il fit non converge o se il parametro dopo il fit esce dall'intervallo
+  // con significato fisico (e.g., una temperatura assoluta < 0 K).
+  funz3->SetParLimits(0,0,1);
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funz3->SetLineColor(3); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  gPR->Fit(funz3,"RM+");
+  cout << "Chi^2:" << funz3->GetChisquare() << ", number of DoF: " << funz3->GetNDF() << " (Probability: " << funz3->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+// Provare a fare fit a P(R) con polinomiale di ordine 4. [Modificare]
+  cout << "\n\n --- Ipotesi  [0]+x*[1]+x*x*[2]+pow(x,3)*[3]+pow(x,4)*[4] --- \n" <<endl;
+  TF1 *funz4 = new TF1("funz4"," [0]+x*[1]+x*x*[2]+pow(x,3)*[3]+pow(x,4)*[4]",0,130);
+  // Le tre seguenti linee servono per inizializzare i parametri della funzione.
+  // Talvolta è necessario imporre che un determinato parametro sia in un intervallo di validità definito. Usare
+  // questa funzione solo se con SetParameter il fit non converge o se il parametro dopo il fit esce dall'intervallo
+  // con significato fisico (e.g., una temperatura assoluta < 0 K).
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funz4->SetLineColor(4); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  gPR->Fit(funz4,"R+");
+  cout << "Chi^2:" << funz4->GetChisquare() << ", number of DoF: " << funz4->GetNDF() << " (Probability: " << funz4->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+}
+
