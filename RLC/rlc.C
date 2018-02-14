@@ -50,7 +50,7 @@ void BANDpass(){
   }
     // --------------------- Grafico Av(freq)  ------------------------------ //
 
-  TCanvas *cav = new TCanvas("av","A(f)",200,10,600,400);
+/*  TCanvas *cav = new TCanvas("av","A(f)",200,10,600,400);
   cav->SetFillColor(0);
   cav->SetLogx();
   cav->cd();
@@ -70,7 +70,7 @@ void BANDpass(){
   gav->Fit(lfit,"M+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
-    // --------------------- Grafico phase(freq)  ------------------------------ //
+  */  // --------------------- Grafico phase(freq)  ------------------------------ //
   TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
   cph->SetFillColor(0);
   cph->cd();
@@ -84,14 +84,14 @@ void BANDpass(){
   gph->GetXaxis()->SetTitle("freq [Hz]");
   gph->GetYaxis()->SetTitle("phase [deg]");
   gph->Draw("AP");
-  cout << "\n\n --- Fit Fase \n" <<endl;
+  /*cout << "\n\n --- Fit Fase \n" <<endl;
   TF1 *afit = new TF1("afit","(180/3.1415)*atan([0]/x)",0,150000);
   afit->SetParameter(0,5000);
   afit->SetLineColor(4);
   gph->Fit(afit,"RM+");
   cout << "Chi^2:" << afit->GetChisquare() << ", number of DoF: " << afit->GetNDF() << " (Probability: " << afit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
-
+*/
 }
 void rlc(){
 BANDpass();
