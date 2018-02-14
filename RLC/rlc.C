@@ -27,8 +27,6 @@ void BANDpass(){
   // Array che conterrà i valori calcolati dell'attenuazione  e  incertezze
   float Av[n];
   float sAv[n];
-  float AdB[n];
-  float sAdB[n];
   float phase[n];
   float sPhase[n];
   // ciclo for (loop) sulle misure
@@ -45,7 +43,7 @@ void BANDpass(){
     sAv[i] = Av[i]*sqrt(pow(sVo[i]/Vo[i],2)+pow(sVi[i]/Vi[i],2));
     phase[i] = 360*freq[i]*abs(skew[i])*1e-6;
     skew[i]<-1 ? sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(1/skew[i],2)):sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(0.01/skew[i],2));
-    printf("f(Hz): (%.2f±%.2f) \t Vi(V): (%.1f±%.1f) \t Vo(V): (%.2f±%.2f) \t Av(unitario): (%.f±%.4f) \n",freq[i],sf[i],Vi[i],sVi[i],Vo[i],sVo[i],AdB[i],sAdB[i]);
+    printf("f(Hz): (%.2f±%.2f) \t Vi(V): (%.1f±%.1f) \t Vo(V): (%.2f±%.2f) \t Av(unitario): (%.f±%.4f) \n",freq[i],sf[i],Vi[i],sVi[i],Vo[i],sVo[i],Av[i],sAv[i]);
     //skew[i]<0 ? skew[i]=T[i]+skew[i] : skew[i]=skew[i]; // converto le fasi in positivo
     phase[i] = 360*freq[i]*skew[i]*1e-6;
     phase[i] > 90 ? phase[i]-=360 : 1;
@@ -69,10 +67,10 @@ void BANDpass(){
   gav->GetYaxis()->SetTitle("A [u]");
   gav->Draw("AP");
   cout << "\n\n --- Fit Guadagno \n" <<endl;
-  TF1 *lfit = new TF1("fit","x*[0]*[0]/sqrt(x*x*pow([0],4)*(1+[1])*(1+[1])+[2]*[2]*(x*x-[0]*[0])*(x*x-[0]*[0]))",0,4700);
+  TF1 *lfit = new TF1("fit","x*[0]*[0]/sqrt(x*x*pow([0],4)*(1+[1])*(1+[1])+[2]*[2]*(x*x-[0]*[0])*(x*x-[0]*[0]))",30,5000);
   lfit->SetParameter(0,500);
   lfit->SetLineColor(4);
-  gav->Fit(lfit,"M+");
+  gav->Fit(lfit,"R+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
    // --------------------- Grafico phase(freq)  ------------------------------ //
@@ -93,7 +91,7 @@ void BANDpass(){
   TF1 *afit = new TF1("afit","(180/3.1415)*atan(([2]/(1+[1]))*([0]*[0]-x*x)/([0]*[0]*x))",0,5000);
   afit->SetParameter(0,500);
   afit->SetLineColor(4);
-  gph->Fit(afit,"RM+");
+  gph->Fit(afit,"R+");
   cout << "Chi^2:" << afit->GetChisquare() << ", number of DoF: " << afit->GetNDF() << " (Probability: " << afit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 }
