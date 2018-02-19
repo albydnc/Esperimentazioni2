@@ -3,8 +3,8 @@
 #include <TAxis.h>            // ci serve per manipolare gli assi dei grafici
 #include <TCanvas.h>          // ci serve per disegnare i grafici
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
-#include <iomanip>            // ci serve per manipolare l'output a video 
-#include <TMath.h> 
+#include <iomanip>            // ci serve per manipolare l'output a video
+#include <TMath.h>
 using namespace std;
 # define M_PI           3.14159265358979323846  /* pi */
 void HIGHpass(){
@@ -15,7 +15,7 @@ void HIGHpass(){
   float Vi[]    = {15.6,15.5,15.5,15.3,15.1,15.0,14.8,14.6,14.5,14.3,14.2,14.1,14.0,14.0,13.8,13.7,13.6,13.5,13.5,13.1}; // V
   float Vo[]    = {1.36,2.62,3.81,4.93,5.90,6.81,7.56,8.31,8.81,9.37,9.81,10.1,10.5,10.7,11.0,11.4,11.7,12.0,12.2,13.1};
   float skew[]  = {-595.0,-277.5,-175.0,-124.1,-94,-72.75,-59,-48.5,-40,-34.25,-29.67,-25.66,-22.5,-19.75,-17.87,-13.2,-10.5,-8.455,-7.125,-0.08};
-	        
+
   // ---------------------- Quantità derivate ----------------------- //
 
   // Array che conterà incertezze su Vi e Vo
@@ -106,7 +106,7 @@ void LOWpass(){
   float Vi[]    = {15.8,15.5,15.3,15.1,15.0,14.8,14.6,14.5,14.3,14.2,14.1,14.0,13.9,13.8,13.8,13.7,13.6,13.6,13.6,13.5,13.5,13.4,13.1,13.1}; // V
   float Vo[]    = {15.8,15.1,14.5,13.8,13.3,12.7,12.1,11.5,11.0,10.5,10.0,9.50,9.06,8.62,8.25,7.93,7.62,7.31,6.90,6.65,6.40,5.71,3.06,1.23};
   float skew[]  = {40,33.75,32,31.5,30.5,30,29,28.5,27.6,27,26,25,24.17,23.75,22.75,21.75,21.25,20.70,20.40,19.90,19.30,17.80,10.40,4.433};
-	        
+
   // ---------------------- Quantità derivate ----------------------- //
 
   // Array che conterà incertezze su Vi e Vo
@@ -187,6 +187,6 @@ void LOWpass(){
 
 }
 void rc(){
-//HIGHpass();
-LOWpass();
+HIGHpass();
+//LOWpass();
 }

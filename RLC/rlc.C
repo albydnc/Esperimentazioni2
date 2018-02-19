@@ -47,7 +47,7 @@ void BANDpass(){
     //skew[i]<0 ? skew[i]=T[i]+skew[i] : skew[i]=skew[i]; // converto le fasi in positivo
     phase[i] = 360*freq[i]*skew[i]*1e-6;
     phase[i] > 90 ? phase[i]-=360 : 1;
-    sPhase[i]=2;
+    sPhase[i]=5;
     //skew[i]>1000 ? sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(5000/skew[i],2)):sPhase[i] = phase[i]*sqrt(pow(sf[i]/freq[i],2)+pow(1/skew[i],2));
     //printf("f(Hz): (%.2f±%.2f) \t Vi(V): (%.1f±%.1f) \t Vo(V): (%.2f±%.2f) \t Av(unitario): (%.f±%.4f) \n",freq[i],sf[i],Vi[i],sVi[i],Vo[i],sVo[i],AdB[i],sAdB[i]);
   }
