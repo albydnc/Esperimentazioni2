@@ -57,4 +57,25 @@ void diodo(){
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
+  TCanvas *cad = new TCanvas("V(I)","V(I)",200,10,600,400);
+  cad->SetFillColor(0);
+  cad->SetLogx();
+  cad->cd();
+  TGraphErrors *gad = new TGraphErrors(n,Id,Vd,sId,sVd);
+  gad->SetMarkerSize(0.6);
+  gad->SetMarkerStyle(21);
+  // Facile, titolo del grafico
+  gad->SetTitle("V(I)");
+  // Titoli degli assis
+  gad->GetYaxis()->SetTitle("Vd [mV]");
+  gad->GetXaxis()->SetTitle("Id [mA]");
+  gad->Draw("AP");
+cout << "\n\n --- Fit Eq di Shockley corretta per il LED \n" <<endl;
+TF1 *fit = new TF1("fit","[0]*26*log(1+[1]*x)",0,11);
+fit->SetParameter(0,2);
+fit->SetLineColor(4);
+gad->Fit(fit,"RM+");
+cout << "Chi^2:" << fit->GetChisquare() << ", number of DoF: " << fit->GetNDF() << " (Probability: " << fit->GetProb() << ")." << endl;
+cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
 }
