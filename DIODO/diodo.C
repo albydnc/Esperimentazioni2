@@ -71,8 +71,11 @@ void diodo(){
   gad->GetXaxis()->SetTitle("Id [mA]");
   gad->Draw("AP");
 cout << "\n\n --- Fit Eq di Shockley corretta per il LED \n" <<endl;
-TF1 *fit = new TF1("fit","[0]*26*log(1+[1]*x)",0,11);
+TF1 *fit = new TF1("fit","[0]*26*log(1+[1]*x)+[2]+[3]*x",0,11);
 fit->SetParameter(0,2);
+fit->SetParameter(1,1e9);
+fit->SetParameter(2,0);
+fit->SetParameter(3,1);
 fit->SetLineColor(4);
 gad->Fit(fit,"RM+");
 cout << "Chi^2:" << fit->GetChisquare() << ", number of DoF: " << fit->GetNDF() << " (Probability: " << fit->GetProb() << ")." << endl;

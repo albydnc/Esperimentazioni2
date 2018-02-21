@@ -55,7 +55,7 @@ void led(){
   TF1 *lfit = new TF1("fit","[0]*(pow(e,x/([1]*25.25))-1)",0,1900);
   lfit->SetParameter(1,5); //scelto a random
   lfit->SetLineColor(4);
-  gav->Fit(lfit,"RM+");
+  gav->Fit(lfit,"R+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
   TCanvas *cad = new TCanvas("V(I)","V(I)",200,10,600,400);
@@ -69,12 +69,16 @@ void led(){
   gad->SetTitle("V(I)");
   // Titoli degli assis
   gad->GetYaxis()->SetTitle("Vd [mV]");
-  gad->GetXaxis()->SetTitle("Id [uA]");
+  gad->GetXaxis()->SetTitle("Id [mA]");
   gad->Draw("AP");
 cout << "\n\n --- Fit Eq di Shockley corretta per il LED \n" <<endl;
-TF1 *fit = new TF1("fit","[0]*26*log(1+[1]*x)",0.003,1);
+TF1 *fit = new TF1("fit","[0]*26*log(1+[1]*x)+[2]+[3]*x",0.001,9);
+fit->SetParameter(0,2);
+fit->SetParameter(1,1e9);
+fit->SetParameter(2,0);
+fit->SetParameter(3,1);
 fit->SetLineColor(4);
-gad->Fit(fit,"R+");
+gad->Fit(fit,"RM+");
 cout << "Chi^2:" << fit->GetChisquare() << ", number of DoF: " << fit->GetNDF() << " (Probability: " << fit->GetProb() << ")." << endl;
 cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
