@@ -218,7 +218,12 @@ void BJT(){
   // --------------------------------- MAGICAL FIT TIME -----------------------------------------
 
   cout << "\n\n --- Fit 100uA \n" <<endl;
-  TF1 *fit100 = new TF1("fit100","[0]/(x+[1])",0,10200);
+  TF1 *fit100 = new TF1("fit100","[0]+[1]*x+[2]*(pow(e,[3]*(x-[4]))-1)",500,10200);
+  fit100->SetParameter(0,10);
+  fit100->SetParameter(1,1);
+  fit100->SetParameter(2,);
+  fit100->SetParameter(3,1e2);
+  fit100->SetParameter(4,0.5);
   fit100->SetLineColor(1);
   gav100->Fit(fit100,"RM+");
   cout << "Chi^2:" << fit100->GetChisquare() << ", number of DoF: " << fit100->GetNDF() << " (Probability: " << fit100->GetProb() << ")." << endl;
