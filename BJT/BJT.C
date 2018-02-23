@@ -190,10 +190,12 @@ void BJT(){
   gav400->GetXaxis()->SetTitle("Vc [mV]");
   gav400->GetYaxis()->SetTitle("Ic [mA]");
   gav400->Draw("AP");
+
   TGraphErrors *gav100 = new TGraphErrors(n100,Vc100,Ic100,sVc100,sIc100);
   gav100->SetMarkerSize(0.6);
   gav100->SetMarkerStyle(21);
   gav100->Draw("P+");
+
   TGraphErrors *gav150 = new TGraphErrors(n150,Vc150,Ic150,sVc150,sIc150);
   gav150->SetMarkerSize(0.6);
   gav150->SetMarkerStyle(21);
@@ -214,18 +216,70 @@ void BJT(){
   gav350->SetMarkerSize(0.6);
   gav350->SetMarkerStyle(21);
   gav350->Draw("P+");
-
   // --------------------------------- MAGICAL FIT TIME -----------------------------------------
-
+// Fit Early
   cout << "\n\n --- Fit 100uA \n" <<endl;
-  TF1 *fit100 = new TF1("fit100","[0]+[1]*x+[2]*(pow(e,[3]*(x-[4]))-1)",500,10200);
-  fit100->SetParameter(0,10);
-  fit100->SetParameter(1,1);
-  fit100->SetParameter(2,);
-  fit100->SetParameter(3,1e2);
-  fit100->SetParameter(4,0.5);
-  fit100->SetLineColor(1);
+  TF1 *fit100 = new TF1("fit100","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit100->SetParameter(0,1e-6);
+  fit100->SetParameter(1,4);
+  fit100->SetParameter(2,1e-4);
   gav100->Fit(fit100,"RM+");
   cout << "Chi^2:" << fit100->GetChisquare() << ", number of DoF: " << fit100->GetNDF() << " (Probability: " << fit100->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 150uA \n" <<endl;
+  TF1 *fit150 = new TF1("fit150","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit150->SetParameter(0,1e-6);
+  fit150->SetParameter(1,6);
+  fit150->SetParameter(2,1e-4);
+  gav150->Fit(fit150,"RM+");
+  cout << "Chi^2:" << fit150->GetChisquare() << ", number of DoF: " << fit150->GetNDF() << " (Probability: " << fit150->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 200uA \n" <<endl;
+  TF1 *fit200 = new TF1("fit200","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit200->SetParameter(0,1e-6);
+  fit200->SetParameter(1,8);
+  fit200->SetParameter(2,1e-4);
+  gav200->Fit(fit200,"RM+");
+  cout << "Chi^2:" << fit200->GetChisquare() << ", number of DoF: " << fit200->GetNDF() << " (Probability: " << fit200->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 250uA \n" <<endl;
+  TF1 *fit250 = new TF1("fit250","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit250->SetParameter(0,1e-6);
+  fit250->SetParameter(1,10);
+  fit250->SetParameter(2,1e-4);
+  gav250->Fit(fit250,"RM+");
+  cout << "Chi^2:" << fit250->GetChisquare() << ", number of DoF: " << fit250->GetNDF() << " (Probability: " << fit250->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 300uA \n" <<endl;
+  TF1 *fit300 = new TF1("fit300","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit300->SetParameter(0,1e-6);
+  fit300->SetParameter(1,12);
+  fit300->SetParameter(2,1e-4);
+  gav300->Fit(fit300,"RM+");
+  cout << "Chi^2:" << fit300->GetChisquare() << ", number of DoF: " << fit300->GetNDF() << " (Probability: " << fit300->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 350uA \n" <<endl;
+  TF1 *fit350 = new TF1("fit350","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit350->SetParameter(0,1e-6);
+  fit350->SetParameter(1,14);
+  fit350->SetParameter(2,1e-4);
+  gav350->Fit(fit350,"RM+");
+  cout << "Chi^2:" << fit350->GetChisquare() << ", number of DoF: " << fit350->GetNDF() << " (Probability: " << fit350->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  cout << "\n\n --- Fit 400uA \n" <<endl;
+  TF1 *fit400 = new TF1("fit400","[0]*pow(e,[1])*(1+[2]*x)",500,10500);
+  fit400->SetParameter(0,1e-6);
+  fit400->SetParameter(1,16);
+  fit400->SetParameter(2,1e-4);
+  gav400->Fit(fit400,"RM+");
+  cout << "Chi^2:" << fit400->GetChisquare() << ", number of DoF: " << fit400->GetNDF() << " (Probability: " << fit400->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+
 }
