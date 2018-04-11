@@ -3,10 +3,12 @@
 #include <TAxis.h>            // ci serve per manipolare gli assi dei grafici
 #include <TCanvas.h>          // ci serve per disegnare i grafici
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
+#include <TFitResultPtr.h>
+#include <TFitResult.h>
+#include <TMatrixD.h>
 #include <iomanip>            // ci serve per manipolare l'output a video
 #include <TMath.h>
 using namespace std;
-# define M_PI           3.14159265358979323846  /* pi */
 void HIGHpass(){
   int n = 20;
   float R = 220;
@@ -72,6 +74,9 @@ void HIGHpass(){
   gav->Fit(lfit,"M+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
+  TFitResultPtr res = gav->Fit(lfit,"RMS+");
+  TMatrixD cov = res->GetCovarianceMatrix();
+  cov.Print();
     // --------------------- Grafico phase(freq)  ------------------------------ //
   TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
   cph->SetFillColor(0);
@@ -163,6 +168,9 @@ void LOWpass(){
   ga2->Fit(fit1,"RM+");
   cout << "Chi^2:" << fit1->GetChisquare() << ", number of DoF: " << fit1->GetNDF() << " (Probability: " << fit1->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
+  TFitResultPtr res = ga2->Fit(fit1,"RMS+");
+  TMatrixD cov = res->GetCovarianceMatrix();
+  cov.Print();
     // --------------------- Grafico phase(freq)  ------------------------------ //
   TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
   cph->SetFillColor(0);

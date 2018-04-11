@@ -5,8 +5,10 @@
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
 #include <iomanip>            // ci serve per manipolare l'output a video
 #include <TMath.h>
+#include <TFitResultPtr.h>
+#include <TFitResult.h>
+#include <TMatrixD.h>
 using namespace std;
-# define M_PI           3.14159265358979323846  /* pi */
 void BANDpass(){
   int n = 22;
   float R = 94;
@@ -73,6 +75,9 @@ void BANDpass(){
   gav->Fit(lfit,"R+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
+  TFitResultPtr res = gav->Fit(lfit,"RMS+");
+  TMatrixD cov = res->GetCovarianceMatrix();
+  cov.Print();
    // --------------------- Grafico phase(freq)  ------------------------------ //
   TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
   cph->SetFillColor(0);

@@ -24,25 +24,25 @@ per eseguire il programma adottare uno dei due seguenti metodi alternativi:
 #include <TAxis.h>            // ci serve per manipolare gli assi dei grafici
 #include <TCanvas.h>          // ci serve per disegnare i grafici
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
-#include <iomanip>            // ci serve per manipolare l'output a video 
+#include <iomanip>            // ci serve per manipolare l'output a video
 using namespace std;
 // Corpo del programma. La funzione qui sotto deve avere lo stesso nome del file .C
 void lamp()
 {
 
-  // --------------------------- DATI ------------------------------- // 
+  // --------------------------- DATI ------------------------------- //
   // Resistenza della lampadina, misurata in laboratorio con il multimetro
-  const float R20 = 13.3; const float sR20 = 0.005*13.3 + 0.8; // ESEMPIO calcolo incertezza! Dipende dal modello!! Modificare 
+  const float R20 = 13.3; const float sR20 = 0.005*13.3 + 0.8; // ESEMPIO calcolo incertezza! Dipende dal modello!! Modificare
 
   // numero misure prese
   const int nmisure = 24;
 
-  
+
   // Dati presi in laboratorio: V = tensione, sV = incertezza tensione, i = intensità di corrente, si = incertezza intensità di corrente
   // consiglio di non mettere il valore per V = 0 V altrimenti si avranno problemi nella parte in cui si calcolano i logaritmi
   float V[]  = {0.3244,0.7458,1.187,1.589,2.054,2.510,3.013,3.435,3.955,4.374,4.837,5.366,5.825,6.286,6.733,7.256,7.706,8.243,8.703,9.175,9.650,10.10,10.68,11.11}; // V
   float i[]  = {11.40,18.02,23.44,27.79,32.42,36.45,40.55,43.78,47.53,50.47,53.50,56.95,59.70,62.47,65.13,68.11,70.55,73.40,75.80,78.20,80.55,82.85,85.61,87.58}; // mA
-		
+
 
 
   // ---------------------------------------------------------------- //
@@ -53,7 +53,7 @@ void lamp()
   // Array che conterà incertezze su i e V
   float sV[nmisure];
   float si[nmisure];
-		
+
   // Array che conterrà i valori calcolati delle resistenze e loro incertezze
   float R[nmisure];
   float sR[nmisure];
@@ -65,17 +65,17 @@ void lamp()
   // ciclo for (loop) sulle misure
   for(int j=0; j<nmisure;++j){
 
-    // ESEMPIO calcolo incertezza! Dipende dal modello!! [Modificare] 
+    // ESEMPIO calcolo incertezza! Dipende dal modello!! [Modificare]
     if      (V[j] < 1)  sV[j] = V[j]*0.001 + 5e-4;
     else if (V[j] < 10) sV[j] = V[j]*0.001 + 5e-3;
-    else                sV[j] = V[j]*0.001 + 5e-2;  
+    else                sV[j] = V[j]*0.001 + 5e-2;
     V[j]=abs(V[j]);
     // ESEMPIO calcolo incertezza! Dipende dal modello!! [Modificare]
     if (i[j] < 1) si[j] = i[j]*0.005 + 1e-3;
     else          si[j] = i[j]*0.005 + 5e-2;
     R[j]  = V[j]/i[j]*1000.0;  // in ohm
     V[j]==0 ? R[j]=0 : R[j]=R[j];
-    
+
     R[j] == 0 ? sR[j]=1e-6 :sR[j] = R[j]*sqrt(pow((sV[j]/V[j]),2)+pow((si[j]/i[j]),2)); // Effettuare la propagazione degli errori
     P[j]  = V[j] * i[j];
     V[j]==0 ? P[j]=0 : P[j]+=0;
@@ -84,15 +84,15 @@ void lamp()
     i[j]/=1000.0;
     si[j]/=1000.0;
     // Stampa a video dei valori. \t inserisce un tab nel print out. Mettendo \n si va a capo invece
-    cout << "N Misura " << j << ":\t V = (" << V[j] << " +- " << sV[j] << ") V, \t i = (" << i[j] << " +- " << si[j] << ") A,\t R = (" 
-	 << setprecision(4) << R[j] << " +- " << sR[j] << ") Ohm, \t P = (" 
-	 << P[j] << " +- " << sP[j] << ") mW." << endl;    
+    cout << "N Misura " << j << ":\t V = (" << V[j] << " +- " << sV[j] << ") V, \t i = (" << i[j] << " +- " << si[j] << ") A,\t R = ("
+	 << setprecision(4) << R[j] << " +- " << sR[j] << ") Ohm, \t P = ("
+	 << P[j] << " +- " << sP[j] << ") mW." << endl;
   }
   // ----------------------------------------------------------------- //
 
 
 
-  
+
   // --------------------- Grafico i(V) ------------------------------ //
   // Creo il canvas (la tela) su cui disegnare il grafico. "ciV" è il il suo nome in memoria
   // è bene che sia unico dentro al programma. "i(v)" è semplicemente il titolo del canvas
@@ -120,7 +120,7 @@ void lamp()
   // Esistono diverse opzioni di disegno, vedi anche https://root.cern.ch/doc/master/classTGraphPainter.html
   // "AP" è molto semplice, gli stiamo chiedendo di disegnare gli assi (A) e i punti (P)
   giV->Draw("AP");
-  
+
   cout << "\n\n --- Fit I(V) pow([0],1/([1]+1))*pow(x,([1]-1)/([1]+1)) \n" <<endl;
   TF1 *funz0 = new TF1("funz0","pow([0]*pow(x,([1]-1)),1/([1]+1))",0,12);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
@@ -129,14 +129,56 @@ void lamp()
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
   // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
-  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   giV->Fit(funz0,"RM+");
 
   cout << "Chi^2:" << funz0->GetChisquare() << ", number of DoF: " << funz0->GetNDF() << " (Probability: " << funz0->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
   // ----------------------------------------------------------------- //
+  // --------------------- Grafico R(V) ------------------------------ //
+  // Creo il canvas (la tela) su cui disegnare il grafico. "cR" è il il suo nome in memoria
+  // è bene che sia unico dentro al programma. "i(v)" è semplicemente il titolo del canvas
+  // le due coppie di numeri che seguono sono le coordinate dell'angolo superiore sinistro e le seconde
+  // la dimensione in pixel lungo x e lungo y
+  TCanvas *cR = new TCanvas("cR","R(v)",200,10,600,400);
+  // Mi assicuro che la tela sia bianca (0 corrisponde al bianco, per altri colori vedi https://root.cern.ch/doc/master/classTColor.html)
+  cR->SetFillColor(0);
+  // Mi assicuro che disegni su questa tela e non su un altra. Ciò è particolarmente importante quando ho tanti canvas aperti.
+  cR->cd();
+  // Istanzio il grafico. Il costruttore che noi usiamo prende come argomenti:
+  // il numero di misure da disegnare, l'array di misure x (=V), l'array di misure y (=i), e gli
+  // array delle  rispettive incertezze
+  TGraphErrors *gR = new TGraphErrors(nmisure,V,R,sV,sR);
+  // Nelle due righe successive disegno i punti del grafico con lo stile che più mi piace.
+  // Vedi anche https://root.cern.ch/doc/master/classTAttMarker.html
+  gR->SetMarkerSize(0.6);
+  gR->SetMarkerStyle(21);
+  // Facile, titolo del grafico
+  gR->SetTitle("R(V)");
+  // Titoli degli assi
+  gR->GetXaxis()->SetTitle("V [V]");
+  gR->GetYaxis()->SetTitle("R [ohm]");
+  // Do istruzioni al grafico di disegnarsi sul canvas che ho selezionato preventivamente con cd()
+  // Esistono diverse opzioni di disegno, vedi anche https://root.cern.ch/doc/master/classTGraphPainter.html
+  // "AP" è molto semplice, gli stiamo chiedendo di disegnare gli assi (A) e i punti (P)
+  gR->Draw("AP");
 
+  cout << "\n\n --- Fit R(V) pow([0],1/([1]+1))*pow(x,(-2/([1]+1)) \n" <<endl;
+  TF1 *funzR = new TF1("funzR","pow(pow([0],-1)*pow(x,2),1/([1]+1))",0,12);
+  // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
+  funzR->SetLineColor(4); // Blu
+  // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
+  // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
+  // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
+  // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
+  gR->Fit(funzR,"RM+");
+
+  cout << "Chi^2:" << funzR->GetChisquare() << ", number of DoF: " << funzR->GetNDF() << " (Probability: " << funzR->GetProb() << ")." << endl;
+  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+
+  // ----------------------------------------------------------------- //
 
 
   // --------------------- Grafico P(R) ------------------------------ //
@@ -167,7 +209,7 @@ void lamp()
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
   // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
-  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   gPR->Fit(funz1,"RM+");
 
   cout << "Chi^2:" << funz1->GetChisquare() << ", number of DoF: " << funz1->GetNDF() << " (Probability: " << funz1->GetProb() << ")." << endl;
@@ -188,7 +230,7 @@ void lamp()
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
   // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
-  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   gPR->Fit(funz2,"RM+");
   cout << "Chi^2:" << funz2->GetChisquare() << ", number of DoF: " << funz2->GetNDF() << " (Probability: " << funz2->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -207,7 +249,7 @@ void lamp()
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
   // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
-  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   gPR->Fit(funz3,"RM+");
   cout << "Chi^2:" << funz3->GetChisquare() << ", number of DoF: " << funz3->GetNDF() << " (Probability: " << funz3->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -224,9 +266,8 @@ void lamp()
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
   // In questo caso, mettere o non mettere l'opzione R è equivalente, visto che 0-130 copre tutto il range delle misure.
-  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione. 
+  // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   gPR->Fit(funz4,"R+");
   cout << "Chi^2:" << funz4->GetChisquare() << ", number of DoF: " << funz4->GetNDF() << " (Probability: " << funz4->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 }
-
