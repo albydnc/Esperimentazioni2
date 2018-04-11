@@ -6,9 +6,9 @@
 #include <iomanip>            // ci serve per manipolare l'output a vIc100eo
 #include <TMath.h>
 using namespace std;
-# define M_PI           3.14159265358979323846  /* pi */
 
-void BJT(){
+
+void OutputC(){
   float Ic100[]    = {4.457,11.138,17.57,18.47,18.68,18.82,18.92,18.96,19.30,20.23,21.09,21.95,22.87,23.78,25.18,26.91};
   float Vc100[]    = {78.9,132.3,217,305,405,503,591,614,901,1899,2900,3950,5020,6170,7880,9950};
   float Ic150[]    = {5.653,15.13,25.43,31.62,32.24,32.94,33.09,33.69,35.38,36.82,38.51,39.62,41.30,44.17,48.23};
@@ -281,5 +281,92 @@ void BJT(){
   cout << "Chi^2:" << fit400->GetChisquare() << ", number of DoF: " << fit400->GetNDF() << " (Probability: " << fit400->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
+
+}
+void InputC(){
+  float Vb2[] = {567,587,599,608,616,624,630};
+  float Vb6[] = {567,587,596,605,613,618,625};
+  float Vb4[] = {567,587,599,608,615,622,629};
+  float Vb8[] = {567,587,595,603,611,615,618};
+  float sVb2[7], sVb4[7],sVb6[7],sVb8[7];
+  float sIb[7];
+  float Ib[] = {100,150,200,250,300,350,400};
+  for(int i=0; i<7;i++){
+    sIb[i] = 0.005*Ib[i];
+    sVb2[i] = 0.005*Vb2[i];
+    if(sVb2[i]<200.0)sVb2[i]+=0.2;
+    if(sVb2[i]>=200.0 && sVb2[i]<2000.0)sVb2[i]+=2;
+    if(sVb2[i]>=2000.0)sVb2[i]+=20;
+    sVb4[i] = 0.005*Vb4[i];
+    if(sVb4[i]<200.0)sVb4[i]+=0.2;
+    if(sVb4[i]>=200.0 && sVb4[i]<2000.0)sVb4[i]+=2;
+    if(sVb4[i]>=2000.0)sVb4[i]+=20;
+    sVb6[i] = 0.005*Vb6[i];
+    if(sVb6[i]<200.0)sVb6[i]+=0.2;
+    if(sVb6[i]>=200.0 && sVb6[i]<2000.0)sVb6[i]+=2;
+    if(sVb6[i]>=2000.0)sVb6[i]+=20;
+    sVb8[i] = 0.005*Vb8[i];
+    if(sVb8[i]<200.0)sVb8[i]+=0.2;
+    if(sVb8[i]>=200.0 && sVb8[i]<2000.0)sVb8[i]+=2;
+    if(sVb8[i]>=2000.0)sVb8[i]+=20;
+ }
+ TCanvas *cav = new TCanvas("I(V)","I(V)",200,10,600,400);
+ cav->SetFillColor(0);
+ cav->cd();
+ TGraphErrors *gav400 = new TGraphErrors(7,Vb2,Ib,sVb2,sIb);
+ gav400->SetMarkerSize(0.6);
+ gav400->SetMarkerStyle(21);
+ // Facile, titolo del grafico
+ gav400->SetTitle("I(V)");
+ // Titoli degli assi
+ gav400->GetXaxis()->SetTitle("Vb [mV]");
+ gav400->GetYaxis()->SetTitle("Ib [#mu A]");
+ gav400->Draw("LAP");
+
+ TGraphErrors *gav100 = new TGraphErrors(7,Vb4,Ib,sVb4,sIb);
+ gav100->SetMarkerSize(0.6);
+ gav100->SetMarkerStyle(21);
+ gav100->Draw("LP+");
+
+ TGraphErrors *gav150 = new TGraphErrors(7,Vb6,Ib,sVb6,sIb);
+ gav150->SetMarkerSize(0.6);
+ gav150->SetMarkerStyle(21);
+ gav150->Draw("LP+");
+ TGraphErrors *gav200 = new TGraphErrors(7,Vb8,Ib,sVb8,sIb);
+ gav200->SetMarkerSize(0.6);
+ gav200->SetMarkerStyle(21);
+ gav200->Draw("LP+");
+
+
+}
+void Beta(){
+  float Ic[] = {23.78,41.30,56.29,72.14,86.33,101.65,114.97};
+  float sIb[7], sIc[7], beta[7],sbeta[7];
+  float Ib[] = {100,150,200,250,300,350,400};
+  for(int i=0; i<7;i++){
+    sIb[i] = 0.005*Ib[i];
+    sIc[i] = 0.005*Ic[i];
+    beta[i]=Ic[i]*1000/Ib[i];
+    sbeta[i]=beta[i]*sqrt(pow(sIc[i]/Ic[i],2)+pow(sIb[i]/Ib[i],2));
+    TCanvas *cav = new TCanvas("beta","beta",200,10,600,400);
+    cav->SetFillColor(0);
+    cav->cd();
+    TGraphErrors *gav400 = new TGraphErrors(7,Ic,beta,sIc,sbeta);
+    gav400->SetMarkerSize(0.6);
+    gav400->SetMarkerStyle(21);
+    // Facile, titolo del grafico
+    gav400->SetTitle("#beta(Ic)");
+    // Titoli degli assi
+    gav400->GetYaxis()->SetTitle("#beta");
+    gav400->GetXaxis()->SetTitle("Ic [mA]");
+    gav400->SetMinimum(100);
+    gav400->SetMaximum(400);
+    gav400->Draw("LAP");
+}
+}
+void BJT(){
+  //OutputC();
+  //InputC();
+  Beta();
 
 }
