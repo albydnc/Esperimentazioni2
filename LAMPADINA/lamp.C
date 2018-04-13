@@ -23,6 +23,7 @@ per eseguire il programma adottare uno dei due seguenti metodi alternativi:
 #include <TGraphErrors.h>     // ci serve per istanziare grafici
 #include <TAxis.h>            // ci serve per manipolare gli assi dei grafici
 #include <TCanvas.h>          // ci serve per disegnare i grafici
+#include <TLegend.h>
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
 #include <iomanip>            // ci serve per manipolare l'output a video
 using namespace std;
@@ -124,7 +125,8 @@ void lamp()
   cout << "\n\n --- Fit I(V) pow([0],1/([1]+1))*pow(x,([1]-1)/([1]+1)) \n" <<endl;
   TF1 *funz0 = new TF1("funz0","pow([0]*pow(x,([1]-1)),1/([1]+1))",0,12);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funz0->SetLineColor(4); // Blu
+  funz0->SetLineStyle(1); // Blu
+  funz0->SetLineColor(14);
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -158,7 +160,7 @@ void lamp()
   gR->SetTitle("R(V)");
   // Titoli degli assi
   gR->GetXaxis()->SetTitle("V [V]");
-  gR->GetYaxis()->SetTitle("R [ohm]");
+  gR->GetYaxis()->SetTitle("R [#Omega]");
   // Do istruzioni al grafico di disegnarsi sul canvas che ho selezionato preventivamente con cd()
   // Esistono diverse opzioni di disegno, vedi anche https://root.cern.ch/doc/master/classTGraphPainter.html
   // "AP" è molto semplice, gli stiamo chiedendo di disegnare gli assi (A) e i punti (P)
@@ -167,7 +169,8 @@ void lamp()
   cout << "\n\n --- Fit R(V) pow([0],1/([1]+1))*pow(x,(-2/([1]+1)) \n" <<endl;
   TF1 *funzR = new TF1("funzR","pow(pow([0],-1)*pow(x,2),1/([1]+1))",0,12);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funzR->SetLineColor(4); // Blu
+  funzR->SetLineStyle(1); // Blu
+  funzR->SetLineColor(14);
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -204,7 +207,8 @@ void lamp()
   // con significato fisico (e.g., una temperatura assoluta < 0 K).
   funz1->SetParLimits(0,0,1);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funz1->SetLineColor(1); // Blu
+  funz1->SetLineStyle(1); // Blu
+  funz1->SetLineColor(12);
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -225,7 +229,8 @@ void lamp()
   // con significato fisico (e.g., una temperatura assoluta < 0 K).
   funz2->SetParLimits(0,0,1);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funz2->SetLineColor(2); // Blu
+  funz2->SetLineStyle(2); // Blu
+  funz2->SetLineColor(13);
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -244,7 +249,8 @@ void lamp()
   // con significato fisico (e.g., una temperatura assoluta < 0 K).
   funz3->SetParLimits(0,0,1);
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funz3->SetLineColor(3); // Blu
+  funz3->SetLineStyle(6); // Blu
+  funz3->SetLineColor(17);
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -261,7 +267,8 @@ void lamp()
   // questa funzione solo se con SetParameter il fit non converge o se il parametro dopo il fit esce dall'intervallo
   // con significato fisico (e.g., una temperatura assoluta < 0 K).
   // cambio colore alla linea della funzione in modo da distinguerla dalla polinomiale di ordine 4 quando la andrò a disegnare
-  funz4->SetLineColor(4); // Blu
+  funz4->SetLineColor(14);
+  funz4->SetLineStyle(9); // Blu
   // Istruzione per fare il fit ai dati usando la funzione funz1 sopra definita
   // + significa che voglio aggiungere la funzione funz1 alla lista delle funzioni già disegnate sul canvas
   // R significa che voglio fare il fit solo in un determinato range, definito quando ho creato funz1. Quindi in questo caso (0-130) Ohm
@@ -269,5 +276,12 @@ void lamp()
   // M dice di usare Hesse che fa una stima più accurata delle incertezze sui parametri. Nel caso di problemi rimuovere l'opzione.
   gPR->Fit(funz4,"R+");
   cout << "Chi^2:" << funz4->GetChisquare() << ", number of DoF: " << funz4->GetNDF() << " (Probability: " << funz4->GetProb() << ")." << endl;
-  cout << "--------------------------------------------------------------------------------------------------------" << endl;
+  cout << "-------------------------------------------------------------------------------------------------------" << endl;
+  TLegend *leg = new TLegend(0.1,0.7,0.34,0.9);
+   leg->SetHeader("Legenda Fit:");
+   leg->AddEntry(funz1,"P=mR^{q}","l");
+   leg->AddEntry(funz2,"P=mR^{4}","l");
+   leg->AddEntry(funz3,"P=m(R-k)^{4}","l");
+   leg->AddEntry(funz4,"4-Polinomiale","l");
+   leg->Draw();
 }

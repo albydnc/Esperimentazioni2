@@ -62,7 +62,7 @@ void HIGHpass(){
   gav->SetMarkerSize(0.6);
   gav->SetMarkerStyle(21);
   // Facile, titolo del grafico
-  gav->SetTitle("A(f)");
+  gav->SetTitle("A(f) passa alto");
   // Titoli degli assi
   gav->GetXaxis()->SetTitle("freq [Hz]");
   gav->GetYaxis()->SetTitle("A [u]");
@@ -70,7 +70,7 @@ void HIGHpass(){
   cout << "\n\n --- Fit Guadagno \n" <<endl;
   TF1 *lfit = new TF1("fit","x/sqrt(x*x+[0]*[0])",0,99000);
   lfit->SetParameter(0,5000);
-  lfit->SetLineColor(4);
+  lfit->SetLineColor(14);
   gav->Fit(lfit,"M+");
   cout << "Chi^2:" << lfit->GetChisquare() << ", number of DoF: " << lfit->GetNDF() << " (Probability: " << lfit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -86,15 +86,15 @@ void HIGHpass(){
   gph->SetMarkerSize(0.6);
   gph->SetMarkerStyle(21);
   // Facile, titolo del grafico
-  gph->SetTitle("Phase(f)");
+  gph->SetTitle("Fase(f) passa alto");
   // Titoli degli assi
   gph->GetXaxis()->SetTitle("freq [Hz]");
-  gph->GetYaxis()->SetTitle("phase [deg]");
+  gph->GetYaxis()->SetTitle("fase [deg]");
   gph->Draw("AP");
   cout << "\n\n --- Fit Fase \n" <<endl;
   TF1 *afit = new TF1("afit","(180/3.1415)*atan([0]/x)",0,150000);
   afit->SetParameter(0,5000);
-  afit->SetLineColor(4);
+  afit->SetLineColor(14);
   gph->Fit(afit,"RM+");
   cout << "Chi^2:" << afit->GetChisquare() << ", number of DoF: " << afit->GetNDF() << " (Probability: " << afit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -156,7 +156,7 @@ void LOWpass(){
   ga2->SetMarkerSize(0.6);
   ga2->SetMarkerStyle(21);
   // Facile, titolo del grafico
-  ga2->SetTitle("A(f)");
+  ga2->SetTitle("A(f) passa basso");
   // Titoli degli assi
   ga2->GetXaxis()->SetTitle("freq [Hz]");
   ga2->GetYaxis()->SetTitle("A [u]");
@@ -164,7 +164,7 @@ void LOWpass(){
   cout << "\n\n --- Fit Guadagno \n" <<endl;
   TF1 *fit1 = new TF1("fit","[0]/sqrt(x*x+[0]*[0])",80,50100);
   fit1->SetParameter(0,5000);
-  fit1->SetLineColor(4);
+  fit1->SetLineColor(14);
   ga2->Fit(fit1,"RM+");
   cout << "Chi^2:" << fit1->GetChisquare() << ", number of DoF: " << fit1->GetNDF() << " (Probability: " << fit1->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -172,7 +172,7 @@ void LOWpass(){
   TMatrixD cov = res->GetCovarianceMatrix();
   cov.Print();
     // --------------------- Grafico phase(freq)  ------------------------------ //
-  TCanvas *cph = new TCanvas("ph","Phase(f)",200,10,600,400);
+  TCanvas *cph = new TCanvas("ph","Fase(f)",200,10,600,400);
   cph->SetFillColor(0);
   cph->cd();
   cph->SetLogx();
@@ -180,21 +180,21 @@ void LOWpass(){
   gph->SetMarkerSize(0.6);
   gph->SetMarkerStyle(21);
   // Facile, titolo del grafico
-  gph->SetTitle("Phase(f)");
+  gph->SetTitle("Fase(f) passa basso");
   // Titoli degli assi
   gph->GetXaxis()->SetTitle("freq [Hz]");
-  gph->GetYaxis()->SetTitle("phase [deg]");
+  gph->GetYaxis()->SetTitle("fase [deg]");
   gph->Draw("AP");
   cout << "\n\n --- Fit Fase \n" <<endl;
   TF1 *afit = new TF1("afit","(180/3.1415)*atan(x/[0])",110,50000);
   afit->SetParameter(0,5000);
-  afit->SetLineColor(4);
+  afit->SetLineColor(14);
   gph->Fit(afit,"RM+");
   cout << "Chi^2:" << afit->GetChisquare() << ", number of DoF: " << afit->GetNDF() << " (Probability: " << afit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
 }
 void rc(){
-HIGHpass();
-//LOWpass();
+//HIGHpass();
+LOWpass();
 }
