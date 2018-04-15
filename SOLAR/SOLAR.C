@@ -87,6 +87,8 @@ void SOLAR(){
   gav->SetMarkerStyle(21);
   // Facile, titolo del grafico
   gav->SetTitle("P(D)");
+  gav->SetLineColor(14);
+  gav->SetMinimum(0);
   // Titoli degli assi
   gav->GetYaxis()->SetTitle("P [mW]");
   gav->GetXaxis()->SetTitle("D [cm]");
@@ -101,6 +103,7 @@ void SOLAR(){
   fit->SetParameter(1,1e-1);
   fit->SetParameter(2,3);
   fit->SetParameter(3,1e-1);
+  fit->SetLineColor(14);
   gav->Fit(fit,"RM+");
   cout << "Chi^2:" << fit->GetChisquare() << ", number of DoF: " << fit->GetNDF() << " (Probability: " << fit->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -115,10 +118,12 @@ gaV->SetMarkerSize(0.6);
 gaV->SetMarkerStyle(21);
 // Facile, titolo del grafico
 gaV->SetTitle("V(d)");
+gaV->SetLineColor(14);
+gaV->SetMinimum(0);
 // Titoli degli assi
 gaV->GetYaxis()->SetTitle("V [mV]");
 gaV->GetXaxis()->SetTitle("D [cm]");
-gaV->Draw("AP");
+gaV->Draw("LAP");
 
 
 // --------------------- Grafico I(d)  ------------------------------ //
@@ -131,10 +136,12 @@ gai->SetMarkerSize(0.6);
 gai->SetMarkerStyle(21);
 // Facile, titolo del grafico
 gai->SetTitle("I(d)");
+gai->SetLineColor(14);
+gai->SetMinimum(0);
 // Titoli degli assi
 gai->GetYaxis()->SetTitle("I [mA]");
 gai->GetXaxis()->SetTitle("D [cm]");
-gai->Draw("AP");
+gai->Draw("LAP");
 
 // --------------------- Grafico eta(d)  ------------------------------ //
 
@@ -146,8 +153,11 @@ gan->SetMarkerSize(0.6);
 gan->SetMarkerStyle(21);
 // Facile, titolo del grafico
 gan->SetTitle("#eta (d)");
+gan->SetLineColor(14);
+gan->SetMinimum(0);
+gan->SetMaximum(0.25);
 // Titoli degli assi
 gan->GetYaxis()->SetTitle("#eta");
 gan->GetXaxis()->SetTitle("D [cm]");
-gan->Draw("AP");
+gan->Draw("LAP");
 }

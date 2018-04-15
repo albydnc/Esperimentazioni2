@@ -58,7 +58,7 @@ void LOWpass(){
   cout << "\n\n --- Fit Guadagno \n" <<endl;
   TF1 *fit1 = new TF1("fit","[0]*[1]/sqrt(x*x+[0]*[0])",0,250000);
   fit1->SetParameter(1,5);
-  fit1->SetLineColor(4);
+  fit1->SetLineColor(14);
   ga2->Fit(fit1,"RM+");
   cout << "Chi^2:" << fit1->GetChisquare() << ", number of DoF: " << fit1->GetNDF() << " (Probability: " << fit1->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
