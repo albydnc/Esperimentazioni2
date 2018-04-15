@@ -223,6 +223,7 @@ void OutputC(){
   fit100->SetParameter(0,1e-6);
   fit100->SetParameter(1,4);
   fit100->SetParameter(2,1e-4);
+  fit100->SetLineColor(14);
   gav100->Fit(fit100,"RM+");
   cout << "Chi^2:" << fit100->GetChisquare() << ", number of DoF: " << fit100->GetNDF() << " (Probability: " << fit100->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -232,6 +233,7 @@ void OutputC(){
   fit150->SetParameter(0,1e-6);
   fit150->SetParameter(1,6);
   fit150->SetParameter(2,1e-4);
+  fit150->SetLineColor(14);
   gav150->Fit(fit150,"RM+");
   cout << "Chi^2:" << fit150->GetChisquare() << ", number of DoF: " << fit150->GetNDF() << " (Probability: " << fit150->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -241,6 +243,7 @@ void OutputC(){
   fit200->SetParameter(0,1e-6);
   fit200->SetParameter(1,8);
   fit200->SetParameter(2,1e-4);
+  fit200->SetLineColor(14);
   gav200->Fit(fit200,"RM+");
   cout << "Chi^2:" << fit200->GetChisquare() << ", number of DoF: " << fit200->GetNDF() << " (Probability: " << fit200->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -250,6 +253,7 @@ void OutputC(){
   fit250->SetParameter(0,1e-6);
   fit250->SetParameter(1,10);
   fit250->SetParameter(2,1e-4);
+  fit250->SetLineColor(14);
   gav250->Fit(fit250,"RM+");
   cout << "Chi^2:" << fit250->GetChisquare() << ", number of DoF: " << fit250->GetNDF() << " (Probability: " << fit250->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -259,6 +263,7 @@ void OutputC(){
   fit300->SetParameter(0,1e-6);
   fit300->SetParameter(1,12);
   fit300->SetParameter(2,1e-4);
+  fit300->SetLineColor(14);
   gav300->Fit(fit300,"RM+");
   cout << "Chi^2:" << fit300->GetChisquare() << ", number of DoF: " << fit300->GetNDF() << " (Probability: " << fit300->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -268,6 +273,7 @@ void OutputC(){
   fit350->SetParameter(0,1e-6);
   fit350->SetParameter(1,14);
   fit350->SetParameter(2,1e-4);
+  fit350->SetLineColor(14);
   gav350->Fit(fit350,"RM+");
   cout << "Chi^2:" << fit350->GetChisquare() << ", number of DoF: " << fit350->GetNDF() << " (Probability: " << fit350->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -277,6 +283,7 @@ void OutputC(){
   fit400->SetParameter(0,1e-6);
   fit400->SetParameter(1,16);
   fit400->SetParameter(2,1e-4);
+  fit400->SetLineColor(14);
   gav400->Fit(fit400,"RM+");
   cout << "Chi^2:" << fit400->GetChisquare() << ", number of DoF: " << fit400->GetNDF() << " (Probability: " << fit400->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
@@ -365,8 +372,8 @@ void Beta(){
 }
 }
 void BJT(){
-  //OutputC();
+  OutputC();
   //InputC();
-  Beta();
+  //Beta();
 
 }
