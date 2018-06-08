@@ -17,18 +17,18 @@ void polar(){
   float xmin=-0.15,xmax=0.45;
   float data[]={2,9,12,18,7,2};
   float no[]={1,1,4,5,4,8,9,9,6,1,0,2};*/
-  /*
+
   int classi = 4;
   int n = 8;
   float xmin=2.9,xmax=3.25;
   float data[]={14,21,11,4};
-  float no[]={4,10,16,5,10,1,3,1};*/
-/*  int classi = 5;
+  float no[]={4,10,16,5,10,1,3,1};
+ /*int classi = 5;
   int n = 10;
   float xmin=172.9,xmax=173.35;
   float data[]={4,14,18,13,2};
   float no[]={2,2,10,3,11,7,6,7,1,1};*/
-  TH1F *hist = new TH1F("hist","gauss",classi,xmin,xmax);
+  TH1F *hist = new TH1F("hist","Provetta 1",classi,xmin,xmax);
   for(int i = 0; i<classi;i++){
     hist->SetBinContent(i+1,data[i]);
   //  hist->SetBinError(i+1,)
@@ -44,6 +44,7 @@ void polar(){
   h2->Fit("f2");
   hist->Draw();
   h2->Draw("same");
+  //hist->Draw("same");
   cout << "Chi^2:" << f1->GetChisquare() << ", number of DoF: " << f1->GetNDF() << " (Probability: " << f1->GetProb() << ")." << endl;
   cout << "--------------------------------------------------------------------------------------------------------" << endl;
   cout << "Chi^2:" << f2->GetChisquare() << ", number of DoF: " << f2->GetNDF() << " (Probability: " << f2->GetProb() << ")." << endl;
