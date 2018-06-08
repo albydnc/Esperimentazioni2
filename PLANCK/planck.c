@@ -48,20 +48,20 @@ void planck(){
     gf->SetMarkerSize(0.6);
     gf->SetMarkerStyle(21);
     // Facile, titolo del grafico
-    gf->SetTitle("Planck");
+    gf->SetTitle("Planck 644 nm");
     // Titoli degli assi
-    gf->GetXaxis()->SetTitle("V");
+    gf->GetXaxis()->SetTitle("mV");
     gf->GetYaxis()->SetTitle("pA");
     gf->Draw("AP");
     cout << "\n\n --- Fit --- \n" <<endl;
-    TF1 *fit1 = new TF1("fit","[0]*x+[1]",1300,3000);
+    TF1 *fit1 = new TF1("fit","[0]*x+[1]",1300,3100);
     fit1->SetParameter(0,0);
     fit1->SetParameter(1,0);
     fit1->SetLineColor(14);
     gf->Fit(fit1,"RM+");
     cout << "Chi^2:" << fit1->GetChisquare() << ", number of DoF: " << fit1->GetNDF() << " (Probability: " << fit1->GetProb() << ")." << endl;
     cout << "--------------------------------------------------------------------------------------------------------" << endl;
-    TF1 *fit2 = new TF1("fit","[0]*x+[1]",0,300);
+    TF1 *fit2 = new TF1("fit","[0]*x+[1]",0,280);
     fit2->SetParameter(0,-1);
     fit2->SetParameter(1,2e2);
     fit2->SetLineColor(14);
@@ -69,10 +69,17 @@ void planck(){
     cout << "Chi^2:" << fit2->GetChisquare() << ", number of DoF: " << fit2->GetNDF() << " (Probability: " << fit2->GetProb() << ")." << endl;
     cout << "--------------------------------------------------------------------------------------------------------" << endl;
     double m = fit1->GetParameter(0);
+    double em = fit1->GetParError(0);
     double q = fit1->GetParameter(1);
+    double eq = fit1->GetParError(1);
+    double m1 = fit2->GetParameter(0);
+    double em1 = fit2->GetParError(0);
+    double q1 = fit2->GetParameter(1);
+    double eq1 = fit2->GetParError(1);
     double x = (fit1->GetParameter(1)-fit2->GetParameter(1))/(fit2->GetParameter(0)-fit1->GetParameter(0));
     double y = m*x+q;
-    cout << "V0: "<< x<<" I0: "<<y<<"\n";
+    double ev=sqrt((pow(eq,2)+pow(eq1,2))/pow(m-m1,2)+(pow(em,2)+pow(em1,2))*pow((q-q1)/pow(m-m1,2),2));
+    cout << "V0: "<< x<<"+-"<<ev<<" I0: "<<y<<"\n";
     cout << "--------------------------------------------------------------------------------------------------------" << endl;
 
     /*TF1 *fite = new TF1("fit","[0]*pow(e,[1]*x)-[2]",0,3000);
